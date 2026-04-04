@@ -655,12 +655,12 @@
             <span class="toggle-label right" id="labelZodiacText" onclick="setZodiacMode(true)">Zodiac Text</span>
         </div>
         <div class="toggle-wrapper">
-            <span class="toggle-label left active" id="labelZodiacAstro" onclick="setZodiacNormMode(false)">Variable Zodiac</span>
+            <span class="toggle-label left active" id="labelZodiacAstro" onclick="setZodiacNormMode(false)">Normalized Zodiac Ring</span>
             <label class="switch">
                 <input type="checkbox" id="zodiacNormToggle" onchange="toggleZodiacNormMode()">
                 <span class="slider"></span>
             </label>
-            <span class="toggle-label right" id="labelZodiacNorm" onclick="setZodiacMode(true)">Normalized Zodiac</span>
+            <span class="toggle-label right" id="labelZodiacNorm" onclick="setZodiacMode(true)">Variable Zodiac Boundaries</span>
         </div>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons Ring</span>
@@ -717,7 +717,7 @@
     // Toggles
     let isProportionalMode = false;
     let isZodiacTextMode = false;
-    let isZodiacNormMode = true;
+    let isZodiacNormMode = false;
     let isSeasonLabelMode = true;
     let isSeasonTextMode = true;
     let isLiturgicalMode = true;
