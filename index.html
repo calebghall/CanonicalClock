@@ -1674,29 +1674,30 @@
         const zodiacSymbols = ['♈︎', '♉︎', '♊︎', '♋︎', '♌︎', '♍︎', '♎︎', '♏︎', '♐︎', '♑︎', '♒︎', '♓︎'];
         const zodiacNames = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'];
 
-        // --- 1. GET SIMULATED YEAR & PRECESSION ---
+        // 1. GET SIMULATED YEAR & PRECESSION
         const currentYear = now.getUTCFullYear();
-        const yearsSince 2000 = currentYear - 2000;
+        const yearsSince2000 = currentYear - 2000;
         const precessionOffset = yearsSince2000 * 0.0139696; 
         
-        // --- 2. DEFINE BOUNDARIES ---
-        // Fallback to false if the toggle element isn't found to prevent crashing
+        // 2. DEFINE BOUNDARIES 
         const zodiacToggleEl = document.getElementById('zodiacNormToggle');
         const isAstroMode = zodiacToggleEl ? zodiacToggleEl.checked : false;
         
+        // IAU J2000 Boundaries (Ophiuchus split at 253.5 midpoint)
         const iauBoundaries = [28.5, 53.5, 90.0, 118.0, 137.5, 174.0, 217.5, 241.0, 253.5, 298.5, 327.0, 348.5];
         const evenBoundaries = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
         
         const baseSet = isAstroMode ? iauBoundaries : evenBoundaries;
         const currentBoundaries = baseSet.map(deg => (deg + precessionOffset) % 360);
         
-        // --- 3. DRAW THE RING ---
+        // 3. DRAW THE TRACK BACKGROUND
         ctx.beginPath();
         ctx.arc(0, 0, zodiacRingR, 0, 2 * Math.PI);
         ctx.lineWidth = 18;
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
         ctx.stroke();
 
+        // 4. DRAW THE SIGNS AND DIVIDERS
         ctx.fillStyle = '#6b7280';
         for (let i = 0; i < 12; i++) {
             let startDeg = currentBoundaries[i];
@@ -1707,7 +1708,7 @@
         
             let startRad = (startDeg * Math.PI / 180) + Math.PI;
         
-            // Divider Lines
+            // Draw Divider Lines
             ctx.beginPath();
             ctx.moveTo((zodiacRingR - 9) * Math.cos(startRad), (zodiacRingR - 9) * Math.sin(startRad));
             ctx.lineTo((zodiacRingR + 9) * Math.cos(startRad), (zodiacRingR + 9) * Math.sin(startRad));
