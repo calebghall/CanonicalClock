@@ -259,6 +259,7 @@
             color: var(--text-main);
             font-weight: 600;
             font-variant-numeric: tabular-nums;
+            padding-left: 12px;
         }
 
         /* Ensure the liturgical output matches the info-row styling */
@@ -623,6 +624,20 @@
 
     <!-- Options Drawer -->
     <div class="drawer-panel" id="optionsPanel">
+        <div class="speed-slider-container">
+            <div class="speed-slider-header">
+                <span class="date-display" id="dateDisplay">Real Time</span>
+                <input type="date" id="jumpDateInput" class="date-input" onchange="handleJumpDate()" title="Jump to exact date">
+            </div>
+            <div class="speed-labels">
+                <span>Rewind</span>
+                <span>Speed Adjust</span>
+                <span>Fast Fwd</span>
+            </div>
+            <!-- Speed slider from -100 to 100 -->
+            <input type="range" min="-100" max="100" value="0" class="speed-range" id="speedSlider">
+            <button class="reset-btn" onclick="resetSpeed()" style="width:100%; margin-top: 6px;">Reset to Now</button>
+        </div>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelFixed" onclick="setMode(false)">Fixed Horizon</span>
             <label class="switch">
@@ -640,43 +655,36 @@
             <span class="toggle-label right" id="labelZodiacText" onclick="setZodiacMode(true)">Zodiac Text</span>
         </div>
         <div class="toggle-wrapper">
-            <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons</span>
+            <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons Ring</span>
             <label class="switch">
                 <input type="checkbox" id="seasonToggle" onchange="toggleSeasonMode()">
                 <span class="slider"></span>
             </label>
-            <span class="toggle-label right" id="labelSeasonOn" onclick="setSeasonMode(true)">Show Seasons</span>
+            <span class="toggle-label right" id="labelSeasonOn" onclick="setSeasonMode(true)">Show Natural Seasons Ring</span>
         </div>
         <div class="toggle-wrapper">
-            <span class="toggle-label left active" id="labelLiturgicalOff" onclick="setLiturgicalMode(false)">Hide Liturgical</span>
+            <span class="toggle-label left active" id="labelSeasonTextOff" onclick="setSeasonTextMode(false)">Hide Natural Seasons Text</span>
+            <label class="switch">
+                <input type="checkbox" id="seasonTextToggle" onchange="toggleSeasonTextMode()">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label right" id="labelSeasonTextOn" onclick="setSeasonTextMode(true)">Show Natural Seasons Text</span>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-label left active" id="labelLiturgicalOff" onclick="setLiturgicalMode(false)">Hide Liturgical Seasons Ring</span>
             <label class="switch">
                 <input type="checkbox" id="liturgicalToggle" onchange="toggleLiturgicalMode()" checked>
                 <span class="slider"></span>
             </label>
-            <span class="toggle-label right" id="labelLiturgicalOn" onclick="setLiturgicalMode(true)">Show Liturgical</span>
+            <span class="toggle-label right" id="labelLiturgicalOn" onclick="setLiturgicalMode(true)">Show Liturgical Seasons Ring</span>
         </div>
         <div class="toggle-wrapper">
-            <span class="toggle-label left active" id="labelLitTextOff" onclick="setLiturgicalTextMode(false)">Hide Lit. Text</span>
+            <span class="toggle-label left active" id="labelLitTextOff" onclick="setLiturgicalTextMode(false)">Hide Liturgical Season Text</span>
             <label class="switch">
                 <input type="checkbox" id="litTextToggle" onchange="toggleLiturgicalTextMode()" checked>
                 <span class="slider"></span>
             </label>
-            <span class="toggle-label right" id="labelLitTextOn" onclick="setLiturgicalTextMode(true)">Show Lit. Text</span>
-        </div>
-
-        <div class="speed-slider-container">
-            <div class="speed-slider-header">
-                <span class="date-display" id="dateDisplay">Real Time</span>
-                <input type="date" id="jumpDateInput" class="date-input" onchange="handleJumpDate()" title="Jump to exact date">
-            </div>
-            <div class="speed-labels">
-                <span>Rewind</span>
-                <span>Speed Adjust</span>
-                <span>Fast Fwd</span>
-            </div>
-            <!-- Speed slider from -100 to 100 -->
-            <input type="range" min="-100" max="100" value="0" class="speed-range" id="speedSlider">
-            <button class="reset-btn" onclick="resetSpeed()" style="width:100%; margin-top: 6px;">Reset to Now</button>
+            <span class="toggle-label right" id="labelLitTextOn" onclick="setLiturgicalTextMode(true)">Show Liturgical Season Text</span>
         </div>
         <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
             <button class="reset-btn" onclick="refreshApp()" style="width:100%; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #f87171;">
@@ -702,6 +710,7 @@
     let isProportionalMode = false;
     let isZodiacTextMode = false;
     let isSeasonLabelMode = false;
+    let isSeasonTextMode = false;
     let isLiturgicalMode = true;
     let isLiturgicalTextMode = true;
 
@@ -768,6 +777,10 @@
             isSeasonLabelMode = localStorage.getItem('uh_seasMode') === 'true';
             document.getElementById('seasonToggle').checked = isSeasonLabelMode;
         }
+        if (localStorage.getItem('uh_seasonTextMode') !== null) {
+            isSeasonTextMode = localStorage.getItem('uh_seasonTextMode') === 'true';
+            document.getElementById('seasonTextToggle').checked = isSeasonTextMode;
+        }
         if (localStorage.getItem('uh_litMode') !== null) {
             isLiturgicalMode = localStorage.getItem('uh_litMode') === 'true';
             document.getElementById('liturgicalToggle').checked = isLiturgicalMode;
@@ -792,6 +805,9 @@
 
         document.getElementById('labelSeasonOff').classList.toggle('active', !isSeasonLabelMode);
         document.getElementById('labelSeasonOn').classList.toggle('active', isSeasonLabelMode);
+
+        document.getElementById('labelSeasonTextOff').classList.toggle('active', !isSeasonTextMode);
+        document.getElementById('labelSeasonTextOn').classList.toggle('active', isSeasonTextMode);
 
         document.getElementById('labelLiturgicalOff').classList.toggle('active', !isLiturgicalMode);
         document.getElementById('labelLiturgicalOn').classList.toggle('active', isLiturgicalMode);
@@ -1033,7 +1049,7 @@
                   months[targetM].replace('as', 'is').replace('es', 'ibus') : // Ablative for Kalendis/Pridie
                   months[targetM]; // Accusative for Ante Diem
 
-            return `${datePart} ${monthName}, Luna ${moonLatin} Anno ${yearLatin} Domini`;
+            return `${datePart} ${monthName}, Luna ${moonLatin}, Anno ${yearLatin} Domini`;
         }
     };
 
@@ -1116,7 +1132,7 @@
 
         output.innerHTML = `
             <div style="padding: 10px 0 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
-                <span style="display: block; color: var(--accent-day); font-size: 10px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Hodie</span>
+                <span style="display: block; color: var(--accent-day); font-size: 10px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Roman and Ecclesiastical Lunar Date</span>
                 <span style="display: block; font-size: 1.1rem; color: #fff; line-height: 1.5; font-family: serif; font-style: italic;">
                     ${pronuntiatioToday.charAt(0).toUpperCase() + pronuntiatioToday.slice(1)}
                 </span>
@@ -1207,6 +1223,13 @@
         updateToggleLabels();
     }
     function setSeasonMode(isOn) { document.getElementById('seasonToggle').checked = isOn; toggleSeasonMode(); }
+
+    function toggleSeasonTextMode() {
+        isSeasonTextMode = document.getElementById('seasonTextToggle').checked;
+        localStorage.setItem('uh_seasonTextMode', isSeasonTextMode);
+        updateToggleLabels();
+    }
+    function setSeasonTextMode(isOn) { document.getElementById('seasonTextToggle').checked = isOn; toggleSeasonTextMode(); }
 
     function toggleLiturgicalMode() {
         isLiturgicalMode = document.getElementById('liturgicalToggle').checked;
@@ -1677,12 +1700,14 @@
             ctx.beginPath(); ctx.arc(0, 0, seasonRingR, 1.5 * Math.PI + gap, 2 * Math.PI - gap); ctx.strokeStyle = '#fbbf24'; ctx.stroke();
 
             // Season Labels inside the track
-            ctx.font = '700 6px -apple-system, sans-serif';
-            ctx.fillStyle = '#1c1c21'; 
-            drawCurvedText('AUTUMN', seasonRingR, 0.25 * Math.PI, 1.5);
-            drawCurvedText('WINTER', seasonRingR, 0.75 * Math.PI, 1.5);
-            drawCurvedText('SPRING', seasonRingR, 1.25 * Math.PI, 1.5);
-            drawCurvedText('SUMMER', seasonRingR, 1.75 * Math.PI, 1.5);
+            if(isSeasonTextMode){
+                ctx.font = '700 6px -apple-system, sans-serif';
+                ctx.fillStyle = '#1c1c21'; 
+                drawCurvedText('AUTUMN', seasonRingR, 0.25 * Math.PI, 1.5);
+                drawCurvedText('WINTER', seasonRingR, 0.75 * Math.PI, 1.5);
+                drawCurvedText('SPRING', seasonRingR, 1.25 * Math.PI, 1.5);
+                drawCurvedText('SUMMER', seasonRingR, 1.75 * Math.PI, 1.5);
+            }
         } else {
             // Faint track if natural seasons are toggled off
             ctx.beginPath();
