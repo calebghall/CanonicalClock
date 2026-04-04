@@ -655,6 +655,14 @@
             <span class="toggle-label right" id="labelZodiacText" onclick="setZodiacMode(true)">Zodiac Text</span>
         </div>
         <div class="toggle-wrapper">
+            <span class="toggle-label left active" id="labelZodiacAstro" onclick="setZodiacNormMode(false)">Variable Zodiac</span>
+            <label class="switch">
+                <input type="checkbox" id="zodiacNormToggle" onchange="toggleZodiacNormMode()">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label right" id="labelZodiacNorm" onclick="setZodiacMode(true)">Normalized Zodiac</span>
+        </div>
+        <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons Ring</span>
             <label class="switch">
                 <input type="checkbox" id="seasonToggle" onchange="toggleSeasonMode()">
@@ -709,6 +717,7 @@
     // Toggles
     let isProportionalMode = false;
     let isZodiacTextMode = false;
+    let isZodiacNormMode = true;
     let isSeasonLabelMode = true;
     let isSeasonTextMode = true;
     let isLiturgicalMode = true;
@@ -772,6 +781,10 @@
         if (localStorage.getItem('uh_zodMode') !== null) {
             isZodiacTextMode = localStorage.getItem('uh_zodMode') === 'true';
             document.getElementById('zodiacToggle').checked = isZodiacTextMode;
+        }
+        if (localStorage.getItem('uh_zodNormMode') !== null) {
+            isZodiacTextMode = localStorage.getItem('uh_zodNormMode') === 'true';
+            document.getElementById('zodiacNormToggle').checked = isZodiacNormMode;
         }
         if (localStorage.getItem('uh_seasMode') !== null) {
             isSeasonLabelMode = localStorage.getItem('uh_seasMode') === 'true';
@@ -1217,6 +1230,13 @@
     }
     function setZodiacMode(isText) { document.getElementById('zodiacToggle').checked = isText; toggleZodiacMode(); }
 
+    function toggleZodiacNormMode() {
+        isZodiacNormMode = document.getElementById('zodiacNormToggle').checked;
+        localStorage.setItem('uh_zodNormMode', isZodiacNormMode);
+        updateToggleLabels();
+    }
+    function setZodiacNormMode(isText) { document.getElementById('zodiacNormToggle').checked = isText; toggleZodiacNormMode(); }
+    
     function toggleSeasonMode() {
         isSeasonLabelMode = document.getElementById('seasonToggle').checked;
         localStorage.setItem('uh_seasMode', isSeasonLabelMode);
@@ -1650,6 +1670,56 @@
         }
 
         // ---- DRAW ZODIAC RING ----
+        // --- 1. GET SIMULATED YEAR ---
+        const currentYear = now.getUTCFullYear();
+        const yearsSince2000 = currentYear - 2000;
+        const precessionOffset = yearsSince2000 * 0.0139696; 
+        
+        // --- 2. DEFINE BOUNDARIES ---
+        const isAstroMode = document.getElementById('zodiacModeToggle').checked;
+        
+        // IAU J2000 Boundaries (Ophiuchus split at 253.5 midpoint)
+        const iauBoundaries = [
+            28.5, 53.5, 90.0, 118.0, 137.5, 174.0, 217.5, 241.0, 253.5, 298.5, 327.0, 348.5
+        ];
+        
+        // Even 30° boundaries (Still shifts with precession)
+        const evenBoundaries = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+        
+        const baseSet = isAstroMode ? iauBoundaries : evenBoundaries;
+        const currentBoundaries = baseSet.map(deg => (deg + precessionOffset) % 360);
+        
+        // --- 3. DRAW THE RING ---
+        for (let i = 0; i < 12; i++) {
+            let startDeg = currentBoundaries[i];
+            let nextDeg = (i === 11) ? currentBoundaries[0] : currentBoundaries[i + 1];
+            
+            let span = nextDeg - startDeg;
+            if (span < 0) span += 360;
+        
+            let startRad = (startDeg * Math.PI / 180) + Math.PI;
+        
+            // Draw the Divider Lines
+            ctx.beginPath();
+            ctx.moveTo((zodiacRingR - 9) * Math.cos(startRad), (zodiacRingR - 9) * Math.sin(startRad));
+            ctx.lineTo((zodiacRingR + 9) * Math.cos(startRad), (zodiacRingR + 9) * Math.sin(startRad));
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#374151'; 
+            ctx.stroke();
+        
+            // Use Span-Midpoint Method for Label Placement
+            let midDeg = startDeg + (span / 2);
+            let midAngle = (midDeg * Math.PI / 180) + Math.PI;
+        
+            if (isZodiacTextMode) {
+                ctx.font = '600 7px sans-serif'; 
+                drawCurvedText(zodiacNames[i], zodiacRingR, midAngle, 1);
+            } else {
+                ctx.font = '14px "Segoe UI Symbol", "Apple Symbols", sans-serif'; 
+                drawCurvedText(zodiacSymbols[i], zodiacRingR, midAngle, 0);
+            }
+        }
+        
         const zodiacRingR = effectiveRadius + 28;
         
         ctx.beginPath();
@@ -1664,7 +1734,9 @@
         ctx.fillStyle = '#6b7280';
         
         for (let i = 0; i < 12; i++) {
-            let sepAngle = Math.PI + (i * Math.PI / 6);
+            // Convert the starting degree to radians and add Math.PI to match your clock's orientation
+            let startRad = currentAstroBoundaries[i] * (Math.PI / 180);
+            let sepAngle = Math.PI + startRad;
 
             ctx.beginPath();
             ctx.moveTo((zodiacRingR - 9) * Math.cos(sepAngle), (zodiacRingR - 9) * Math.sin(sepAngle));
@@ -1673,7 +1745,9 @@
             ctx.strokeStyle = '#374151';
             ctx.stroke();
 
-            let textAngle = Math.PI + (i * Math.PI / 6) + (Math.PI / 12);
+            // Find the middle of the constellation to place the text/icon
+            let nextRad = (i === 11) ? (currentAstroBoundaries[0] + 360) * (Math.PI / 180) : currentAstroBoundaries[i + 1] * (Math.PI / 180);
+            let textAngle = Math.PI + startRad + ((nextRad - startRad) / 2);
             
             if (isZodiacTextMode) {
                 ctx.font = '600 7px sans-serif'; 
