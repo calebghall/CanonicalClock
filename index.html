@@ -660,7 +660,7 @@
                 <input type="checkbox" id="zodiacNormToggle" onchange="toggleZodiacNormMode()">
                 <span class="slider"></span>
             </label>
-            <span class="toggle-label right" id="labelZodiacNorm" onclick="setZodiacMode(true)">Variable Zodiac Boundaries</span>
+            <span class="toggle-label right" id="labelZodiacNorm" onclick="setZodiacNormMode(true)">Variable Zodiac Boundaries</span>
         </div>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons Ring</span>
@@ -783,7 +783,7 @@
             document.getElementById('zodiacToggle').checked = isZodiacTextMode;
         }
         if (localStorage.getItem('uh_zodNormMode') !== null) {
-            isZodiacTextMode = localStorage.getItem('uh_zodNormMode') === 'true';
+            isZodiacNormMode = localStorage.getItem('uh_zodNormMode') === 'true';
             document.getElementById('zodiacNormToggle').checked = isZodiacNormMode;
         }
         if (localStorage.getItem('uh_seasMode') !== null) {
