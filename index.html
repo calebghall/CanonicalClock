@@ -1918,7 +1918,7 @@
         const daysInYear = (now.getUTCFullYear() % 4 === 0 && now.getUTCFullYear() % 100 !== 0) || (now.getUTCFullYear() % 400 === 0) ? 366 : 365;
 
         // --- DRAW MONTHS RING (Now the Moon track) ---
-        const monthsRingR = effectiveRadius + 11;
+        const monthsRingR = effectiveRadius + 12;
         
         ctx.beginPath();
         ctx.arc(0, 0, monthsRingR, 0, 2 * Math.PI);
@@ -1948,8 +1948,49 @@
             drawCurvedText(monthNames[i], monthsRingR, midAngle, 1);
         }
 
+        // --- DRAW SEASON RING (Sun Track) ---
+        const seasonRingR = effectiveRadius + 27;
+
+        if (isSeasonLabelMode) {
+            const ringWidth = 8;
+            const gap = 0.03;
+
+            ctx.lineWidth = ringWidth;
+
+            // Colored Tracks
+            function eclipticToCanvas(deg) {
+                return Math.PI - (deg * Math.PI / 180);
+            }
+
+            const springSolstice = eclipticToCanvas(0);
+            const summerSolstice = eclipticToCanvas(90);
+            const autumnSolstice = eclipticToCanvas(180);
+            const winterSolstice = eclipticToCanvas(270);
+
+            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, summerSolstice + gap, springSolstice - gap); ctx.strokeStyle = '#34d399'; ctx.stroke(); // Spring
+            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, autumnSolstice + gap, summerSolstice - gap); ctx.strokeStyle = '#fbbf24'; ctx.stroke(); // Summer
+            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, winterSolstice + gap, autumnSolstice - gap); ctx.strokeStyle = '#fb923c'; ctx.stroke(); // Autumn
+            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, springSolstice + gap, winterSolstice - gap); ctx.strokeStyle = '#60a5fa'; ctx.stroke(); // Winter
+
+            if(isSeasonTextMode){
+                ctx.font = '700 6px -apple-system, sans-serif';
+                ctx.fillStyle = '#1c1c21';
+                drawCurvedText('SPRING', seasonRingR, eclipticToCanvas(45), 1.5);
+                drawCurvedText('SUMMER', seasonRingR, eclipticToCanvas(135), 1.5);
+                drawCurvedText('AUTUMN', seasonRingR, eclipticToCanvas(225), 1.5);
+                drawCurvedText('WINTER', seasonRingR, eclipticToCanvas(315), 1.5);
+            }
+        } else {
+            // Faint track if natural seasons are toggled off
+            ctx.beginPath();
+            ctx.arc(0, 0, seasonRingR, 0, 2 * Math.PI);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.stroke();
+        }
+
         // ---- DRAW ZODIAC RING ----
-        const zodiacRingR = effectiveRadius + 28;
+        const zodiacRingR = effectiveRadius + 44;
         const zodiacSymbols = ['♈︎', '♉︎', '♊︎', '♋︎', '♌︎', '♍︎', '♎︎', '♏︎', '♐︎', '♑︎', '♒︎', '♓︎'];
         const zodiacNames = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'];
 
@@ -2008,42 +2049,11 @@
             }
         }
 
-        // --- DRAW SEASON RING (Sun Track) ---
-        const seasonRingR = effectiveRadius + 44;
-
-        if (isSeasonLabelMode) {
-            const ringWidth = 8;
-            const gap = 0.03;
-
-            ctx.lineWidth = ringWidth;
-
-            // Colored Tracks
-            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, gap, 0.5 * Math.PI - gap); ctx.strokeStyle = '#fb923c'; ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, 0.5 * Math.PI + gap, Math.PI - gap); ctx.strokeStyle = '#60a5fa'; ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, Math.PI + gap, 1.5 * Math.PI - gap); ctx.strokeStyle = '#34d399'; ctx.stroke();
-            ctx.beginPath(); ctx.arc(0, 0, seasonRingR, 1.5 * Math.PI + gap, 2 * Math.PI - gap); ctx.strokeStyle = '#fbbf24'; ctx.stroke();
-
-            // Season Labels inside the track
-            if(isSeasonTextMode){
-                ctx.font = '700 6px -apple-system, sans-serif';
-                ctx.fillStyle = '#1c1c21'; 
-                drawCurvedText('AUTUMN', seasonRingR, 0.25 * Math.PI, 1.5);
-                drawCurvedText('WINTER', seasonRingR, 0.75 * Math.PI, 1.5);
-                drawCurvedText('SPRING', seasonRingR, 1.25 * Math.PI, 1.5);
-                drawCurvedText('SUMMER', seasonRingR, 1.75 * Math.PI, 1.5);
-            }
-        } else {
-            // Faint track if natural seasons are toggled off
-            ctx.beginPath();
-            ctx.arc(0, 0, seasonRingR, 0, 2 * Math.PI);
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.stroke();
-        }
+        
 
         // --- DRAW LITURGICAL RING ---
         if (isLiturgicalMode) {
-            const litRingR = effectiveRadius + 60; 
+            const litRingR = effectiveRadius + 64; 
             const litWidth = 14;
             const litGap = 0.045; 
             
