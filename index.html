@@ -1172,20 +1172,11 @@
         if ("geolocation" in navigator) {
             info.innerText = 'Requesting local coordinates...';
             navigator.geolocation.getCurrentPosition(
-                async (position) => {
+                (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    try {
-                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                        const data = await response.json();
-                        let cityName = "Your Location";
-                        if (data && data.address) {
-                            cityName = data.address.city || data.address.town || data.address.village || data.address.county || "Your Location";
-                        }
-                        setAndSaveLocation(cityName, lat, lon);
-                    } catch (e) {
-                        setAndSaveLocation("Local Coordinates", lat, lon);
-                    }
+                    
+                    setAndSaveLocation("Local Coordinates", lat, lon);
                 },
                 (error) => {
                     info.innerText = 'Location access denied. Using fallback...';
