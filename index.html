@@ -595,13 +595,16 @@
         </div>
         
         <div class="info-list">
-            <div class="info-row"><span>Solar Midnight</span><span id="infoMidnight">--:--</span></div>
-            <div class="info-row"><span>Lauds (Sunrise)</span><span id="infoSunrise">--:--</span></div>
-            <div class="info-row"><span>Terce</span><span id="infoThird">--:--</span></div>
-            <div class="info-row"><span>Sext (Solar Midday)</span><span id="infoNoon">--:--</span></div>
-            <div class="info-row"><span>None</span><span id="infoNinth">--:--</span></div>
-            <div class="info-row"><span>Vespers (Sunset)</span><span id="infoSunset">--:--</span></div>
-            <div class="info-row"><span>Compline (Variable)</span><span id="infoBedtime">--:--</span></div>
+            <div class="info-row"><span>Midnight</span><span id="infoMidnight">--:--</span></div>
+            <div class="info-row"><span>Dawn</span><span id="infoDawn">--:--</span></div>
+            <div class="info-row"><span>Sunrise</span><span id="infoSunrise">--:--</span></div>
+            <div class="info-row"><span>Third Hour</span><span id="infoThird">--:--</span></div>
+            <div class="info-row"><span>Sixth Hour (Solar Midday)</span><span id="infoSixth">--:--</span></div>
+            <div class="info-row"><span>Ninth Hour</span><span id="infoNinth">--:--</span></div>
+            <div class="info-row"><span>Sunset</span><span id="infoSunset">--:--</span></div>
+            <div class="info-row"><span>Dusk</span><span id="infoDusk">--:--</span></div>
+            <div class="info-row"><span>Third Hour of Night</span><span id="infoThirdNight">--:--</span></div>
+            <div class="info-row"><span>Midnight</span><span id="infoMidnightUpcoming">--:--</span></div>
         </div>
     </div>
 
@@ -1592,13 +1595,34 @@
         const rise = Astronomy.SearchRiseSet('Sun', observer, +1, astroTime, 1);
         const set = Astronomy.SearchRiseSet('Sun', observer, -1, astroTime, 1);
 
-        // Standard fallback just in case of extreme polar latitudes where the sun doesn't rise/set
-        let sunriseTime = rise ? rise.date : new Date(startOfDay.getTime() + 6 * 3600000);
-        let sunsetTime = set ? set.date : new Date(startOfDay.getTime() + 18 * 3600000);
+        const civilDawn    = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, +1, astroTime, 1, -6);
+        const nauticalDawn = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, +1, astroTime, 1, -12);
+        const astroDawn    = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, +1, astroTime, 1, -18);
+
+        const civilDusk    = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, -1, astroTime, 1, -6);
+        const nauticalDusk = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, -1, astroTime, 1, -12);
+        const astroDusk    = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, -1, astroTime, 1, -18);
+
+        let sunriseTime    = rise        ? rise.date        : new Date(startOfDay.getTime() + 6  * 3600000);
+        let sunsetTime     = set         ? set.date         : new Date(startOfDay.getTime() + 18 * 3600000);
+        let civilDawnTime  = civilDawn   ? civilDawn.date   : sunriseTime;
+        let nautDawnTime   = nauticalDawn? nauticalDawn.date: sunriseTime;
+        let astroDawnTime  = astroDawn   ? astroDawn.date   : sunriseTime;
+        let civilDuskTime  = civilDusk   ? civilDusk.date   : sunsetTime;
+        let nautDuskTime   = nauticalDusk? nauticalDusk.date: sunsetTime;
+        let astroDuskTime  = astroDusk   ? astroDusk.date   : sunsetTime;
 
         return { 
-            sunrise: sunriseTime, 
-            sunset: sunsetTime 
+            sunrise:     sunriseTime,
+            sunset:      sunsetTime,
+            civilDawn:   civilDawnTime,
+            nautDawn:    nautDawnTime,
+            astroDawn:   astroDawnTime,
+            civilDusk:   civilDuskTime,
+            nautDusk:    nautDuskTime,
+            astroDusk:   astroDuskTime,
+            dawn:        civilDawnTime,
+            dusk:        civilDuskTime,   
         };
     }
 
@@ -1689,25 +1713,21 @@
         if (document.getElementById('liturgicalPanel').classList.contains('open')) {
             const dayHrMs = dayDurMs / 12;
             
-            // Midnight between previous day and current day
-            const prevNightDurMs = todaySun.sunrise.getTime() - yesterdaySun.sunset.getTime();
-            const prevNightHrMs = prevNightDurMs / 12;
-            
             // Upcoming night (for Compline/Bedtime)
             const nightDurMs = tomorrowSun.sunrise.getTime() - todaySun.sunset.getTime();
             const nightHrMs = nightDurMs / 12;
             
-            document.getElementById('infoMidnight').innerText = formatLocalTime(new Date(yesterdaySun.sunset.getTime() + prevNightHrMs * 6));
+            document.getElementById('infoMidnight').innerText = formatLocalTime(new Date(yesterdaySun.sunset.getTime() + (todaySun.sunrise.getTime() - yesterdaySun.sunset.getTime()) / 2));
+            document.getElementById('infoDawn').innerText = formatLocalTime(todaySun.dawn);
             document.getElementById('infoSunrise').innerText = formatLocalTime(todaySun.sunrise);
             document.getElementById('infoThird').innerText = formatLocalTime(new Date(todaySun.sunrise.getTime() + dayHrMs * 3));
-            document.getElementById('infoNoon').innerText = formatLocalTime(new Date(todaySun.sunrise.getTime() + dayHrMs * 6));
+            document.getElementById('infoSixth').innerText = formatLocalTime(new Date(todaySun.sunrise.getTime() + dayHrMs * 6));
             document.getElementById('infoNinth').innerText = formatLocalTime(new Date(todaySun.sunrise.getTime() + dayHrMs * 9));
             document.getElementById('infoSunset').innerText = formatLocalTime(todaySun.sunset);
-            
-            const infoBedtimeEl = document.getElementById('infoBedtime');
-            if(infoBedtimeEl) {
-                infoBedtimeEl.innerText = formatLocalTime(new Date(todaySun.sunset.getTime() + nightHrMs * 3));
-            }
+            document.getElementById('infoDusk').innerText = formatLocalTime(todaySun.dusk);
+            document.getElementById('infoThirdNight').innerText = formatLocalTime(new Date(todaySun.sunset.getTime() + nightHrMs * 3));
+            document.getElementById('infoMidnightUpcoming').innerText = formatLocalTime(new Date(todaySun.sunset.getTime() + (tomorrowSun.sunrise.getTime() - todaySun.sunset.getTime()) / 2));
+
         }
 
         // --- TRUE EPHEMERIS via Astronomy Engine ---
@@ -1798,10 +1818,10 @@
         }
         // --- END MOON CALCULATION FIX ---
 
-        updateUI(hour, minute, isDay, continuousHourFloat, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets);
+        updateUI(hour, minute, isDay, continuousHourFloat, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets, todaySun);
     }
 
-    function updateUI(hour, minute, isDay, continuousHourFloat, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets) {        const digitalTime = document.getElementById('digitalTime');
+    function updateUI(hour, minute, isDay, continuousHourFloat, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets, todaySun) {        const digitalTime = document.getElementById('digitalTime');
         const periodLabel = document.getElementById('periodLabel');
         const searchBtn = document.getElementById('searchBtn');
 
@@ -1831,10 +1851,10 @@
             searchBtn.style.color = '#000';
         }
 
-        drawClock(continuousHourFloat, isDay, accentColor, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets);
+        drawClock(continuousHourFloat, isDay, accentColor, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets, todaySun);
     }
 
-    function drawClock(continuousHourFloat, isDay, accentColor, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets) {
+    function drawClock(continuousHourFloat, isDay, accentColor, pDay, seasonAngle, phaseFraction, moonZodiacAngle, now, moonContinuousHour, planets, todaySun) {
         const canvas = document.getElementById('clockCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -2150,21 +2170,25 @@
         ctx.translate(zx, zy);
         ctx.rotate(seasonAngle);
 
-        // Rays
-        const numRays = 8;
-        for (let i = 0; i < numRays; i++) {
-            const rayAngle = (i / numRays) * 2 * Math.PI;
-            const tipR = 12;
-            const baseR = 8;
-            const halfWidth = 0.4; // radians
+        // Rays if day
+        const activateRays = now >= todaySun.dawn && now <= todaySun.dusk;
 
-            ctx.beginPath();
-            ctx.moveTo(Math.cos(rayAngle) * tipR, Math.sin(rayAngle) * tipR);
-            ctx.lineTo(Math.cos(rayAngle - halfWidth) * baseR, Math.sin(rayAngle - halfWidth) * baseR);
-            ctx.lineTo(Math.cos(rayAngle + halfWidth) * baseR, Math.sin(rayAngle + halfWidth) * baseR);
-            ctx.closePath();
-            ctx.fillStyle = '#fbbf24';
-            ctx.fill();
+        if (activateRays) {
+            const numRays = 8;
+            for (let i = 0; i < numRays; i++) {
+                const rayAngle = (i / numRays) * 2 * Math.PI;
+                const tipR = 12;
+                const baseR = 8;
+                const halfWidth = 0.4;
+
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(rayAngle) * tipR, Math.sin(rayAngle) * tipR);
+                ctx.lineTo(Math.cos(rayAngle - halfWidth) * baseR, Math.sin(rayAngle - halfWidth) * baseR);
+                ctx.lineTo(Math.cos(rayAngle + halfWidth) * baseR, Math.sin(rayAngle + halfWidth) * baseR);
+                ctx.closePath();
+                ctx.fillStyle = '#fbbf24';
+                ctx.fill();
+            }
         }
 
         // Outer dark ring
