@@ -2002,6 +2002,7 @@
             const ringWidth = 8;
             const gap = 0.03;
 
+            ctx.lineCap = 'round';
             ctx.lineWidth = ringWidth;
 
             // Colored Tracks
@@ -2124,6 +2125,7 @@
                 
                 ctx.beginPath();
                 ctx.arc(0, 0, litRingR, drawStart, drawEnd);
+                ctx.lineCap = 'round';
                 ctx.lineWidth = litWidth;
                 ctx.strokeStyle = seg.color;
                 ctx.stroke();
