@@ -2,8 +2,8 @@ import json
 
 # Configuration
 input_file = 'cities500.txt' 
-tier1_file = 'tier1.json'
-tier2_file = 'tier2.json'
+tier1_file = 'citydata/tier1.json'
+tier2_file = 'citydata/tier2.json'
 attribution_str = "Data (c) GeoNames.org | CC BY 4.0"
 
 print(f"Processing {input_file}...")

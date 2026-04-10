@@ -1,0 +1,49 @@
+name: Update City Data
+
+on:
+  schedule:
+    - cron: '0 0 1 * *' # Runs at midnight on the 1st of every month
+  workflow_dispatch:      # Allows you to run it manually with a button click
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+
+      - name: Download latest GeoNames data
+        run: |
+          set -e # Exit immediately if a command fails
+
+          wget http://download.geonames.org/export/dump/cities500.zip
+
+          # Check if zip exists and has content
+          if [ ! -s cities500.zip ]; then
+            echo "Error: Downloaded file is empty or missing."
+            exit 1
+          fi
+
+          unzip cities500.zip
+          
+          # Final check: Does the txt file actually exist after unzipping?
+          if [ ! -f cities500.txt ]; then
+            echo "Error: cities500.txt not found after unzip."
+            exit 1
+          fi
+
+      - name: Run Compression Script
+        run: python citydata/cityDataCompress.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add citydata/*.json
+          # Only commit if there are actually changes
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated city data update" && git push)

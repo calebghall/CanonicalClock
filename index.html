@@ -629,7 +629,7 @@
             <div class="info-row"><span>"[Where were you w]hen the morning stars praised me together, and all the sons of God made a joyful melody? ... Shalt thou be able to join together the shining stars the Pleiades, or canst thou stop the turning about of Arcturus?  Canst thou bring forth the day star in its time, and make the evening star to rise upon the children of the earth?"</span><span>Job 38:7, 31-32</span></div>
             <p class="info-text">The Zodiac also follows its daily course, and the position of the Sun, Moon, and Planets in relation to the Zodiac is also shown. Over the course of the year, the Sun is shown progressing through the Seasons, both natural and liturgical.
             </p>
-            <p class="info-text">Device location data is processed in the web browser. No information is saved on an external server. The only external connection is if a city or location is typed into the search bar. In that case, a request is shared with OpenStreetMaps to retrieve longitude/latitute information for that location.
+            <p class="info-text">Device location data is processed in the web browser. No information is saved on an external server.
             </p>
         </div>
     </div>
@@ -1035,7 +1035,7 @@
             }
         }
     
-    // 2. Clear the named cache you created
+    // 2. Clear the named cache
         if ('caches' in window) {
             await caches.delete('astrolabe-offline-v1');
         }
@@ -1595,7 +1595,7 @@
             state:   tier.m[record[1]],
             lat:     record[2],
             lon:     record[3],
-            attribution: tier.a // The metadata you added in Python
+            attribution: tier.a 
         };
     }
 
@@ -2325,7 +2325,7 @@
             // Convert the moon's actual clock-face angle back into the rotated ring's frame
             moonAngle = getAngle(moonContinuousHour) - zodiacRotationOffset;
         } else {
-            // Moon is below horizon — keep zodiac position (or you could skip drawing)
+            // Moon is below horizon — keep zodiac position
             moonAngle = moonZodiacAngle;
         }
 
