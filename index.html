@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <title>Signa et Tempora Clock</title>
     
@@ -25,7 +25,7 @@
             --bg-body: #111113;
             --bg-widget: #1c1c21;
             --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --text-muted: #b0b7c3;
             --accent-day: #fbbf24;
             --accent-night: #60a5fa;
             --input-bg: #2d2d34;
@@ -45,7 +45,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Changed from center to allow scrolling */
+            justify-content: flex-start;
             min-height: 100vh;
             margin: 0;
             /* Safe area insets for notches/home indicators */
@@ -62,10 +62,10 @@
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
             text-align: center;
             width: 100%;
-            max-width: 570px;
+            max-width: 620px;
             transition: all 0.5s ease;
             position: relative;
-            margin: auto; /* Add this to center the widget vertically when it fits */
+            margin: auto; 
         }
 
         .input-group {
@@ -89,7 +89,7 @@
         }
         
         input[type="text"]::placeholder {
-            color: #6b7280;
+            color: #9ca3af;
         }
 
         .date-input {
@@ -187,6 +187,13 @@
         .icon-btn:hover, .icon-btn.active {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-main);
+        }
+
+        .icon-btn:focus-visible,
+        .switch input:focus-visible + .slider,
+        button:focus-visible {
+            outline: 2px solid var(--accent-day);
+            outline-offset: 2px;
         }
 
         /* Expanding Panels inside Normal Flow */
@@ -294,7 +301,7 @@
         #liturgicalOutput .date-label {
             display: block;
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
             margin-bottom: 4px;
         }
@@ -390,7 +397,7 @@
 
         .reset-btn {
             padding: 8px 14px;
-            border: 1px solid #4b5563;
+            border: 1px solid #6b7280;
             background: transparent;
             color: var(--text-main);
             border-radius: 8px;
@@ -437,7 +444,7 @@
         .clock-container {
             position: relative;
             width: 100%;
-            max-width: 420px;
+            max-width: 480px;
             aspect-ratio: 1 / 1;
             height: auto;
             margin: 36px auto;
@@ -488,7 +495,7 @@
                  letter-spacing: 2px;
              }
              .clock-container {
-                 max-width: min(100%, 45vh);
+                 max-width: min(100%, 50vh);
                  margin: 20px auto;
              }
              .info {
@@ -556,7 +563,7 @@
     <div class="period-label" id="periodLabel">---</div>
 
     <div class="clock-container">
-        <canvas id="clockCanvas" width="420" height="420"></canvas>
+        <canvas id="clockCanvas" width="480" height="480"></canvas>
     </div>
 
     <div class="input-group">
@@ -651,7 +658,7 @@
             <button class="reset-btn" onclick="resetSpeed()" style="width:100%; margin-top: 6px;">Reset to Now</button>
         </div>
         <!-- CLOCK FACE -->
-        <p style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px;">Clock Face</p>
+        <p style="font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px;">Clock Face</p>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelFixed" onclick="setMode(false)">Fixed Horizon</span>
             <label class="switch">
@@ -678,7 +685,7 @@
         </div>
 
         <!-- SEASONS -->
-        <p style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Seasons</p>
+        <p style="font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Seasons</p>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelSeasonOff" onclick="setSeasonMode(false)">Hide Natural Seasons</span>
             <label class="switch">
@@ -697,7 +704,7 @@
         </div>
 
         <!-- ZODIAC -->
-        <p style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Zodiac</p>
+        <p style="font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Zodiac</p>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelZodiacIcon" onclick="setZodiacMode(false)">Icons</span>
             <label class="switch">
@@ -724,7 +731,7 @@
         </div>
 
         <!-- LITURGICAL -->
-        <p style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Liturgical</p>
+        <p style="font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 4px;">Liturgical</p>
         <div class="toggle-wrapper">
             <span class="toggle-label left active" id="labelLiturgicalOff" onclick="setLiturgicalMode(false)">Hide Liturgical Seasons</span>
             <label class="switch">
@@ -746,7 +753,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
                 Update & Refresh App
             </button>
-            <p style="font-size: 10px; color: var(--text-muted); margin-top: 8px; text-align: center;">Clears cache and reloads from server</p>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 8px; text-align: center;">Clears cache and reloads from server</p>
         </div>
     </div>
 </div>
@@ -1455,7 +1462,7 @@
         
         return [
             { start: getDOY_Current(christmasPrev), end: 6, color: 'gold', text: 'NATIVITY', textColor: '#111113' },
-            { start: 6, end: getDOY_Current(ashWed), color: 'darkseagreen', text: 'TIME AFTER EPIPHANY', textColor: '#111113' },
+            { start: 6, end: getDOY_Current(ashWed), color: 'darkseagreen', text: 'AFTER EPIPHANY', textColor: '#111113' },
             { start: getDOY_Current(ashWed), end: getDOY_Current(easter), color: 'purple', text: 'QUADREGESIMAE', textColor: '#f8fafc' },
             { start: getDOY_Current(easter), end: getDOY_Current(pentecost)+1, color: 'gold', text: 'PASCHALTIDE', textColor: '#111113' },
             //{ start: getDOY_Current(pentecost), end: getDOY_Current(pentecost) + 7, color: '#ef4444', text: 'PENT.', textColor: '#f8fafc' },
@@ -2003,7 +2010,7 @@
         const canvas = document.getElementById('clockCanvas');
         const ctx = canvas.getContext('2d');
         
-        const size = 420;
+        const size = 480;
         const center = size / 2;
         
         const dpr = window.devicePixelRatio || 1;
@@ -2018,43 +2025,55 @@
         ctx.clearRect(0, 0, size, size);
         ctx.translate(center, center);
         
-        const effectiveRadius = center - 94; 
+        const effectiveRadius = center - 114; 
 
         // Helper function to draw curved text
         function drawCurvedText(text, radius, centerAngle, letterSpacing = 2) {
-            ctx.save();
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = 'center';
-            
-            const chars = Array.from(text);
-            let totalAngle = 0;
-            const charAngles = [];
-            const letterSpacingAngle = chars.length > 1 ? letterSpacing / radius : 0; 
-            
-            for (let i = 0; i < chars.length; i++) {
-                let w = ctx.measureText(chars[i]).width;
-                let a = w / radius;
-                charAngles.push(a);
-                totalAngle += a;
-                if (i < chars.length - 1) totalAngle += letterSpacingAngle;
-            }
-            
-            let currentAngle = centerAngle - (totalAngle / 2);
-            
-            for (let i = 0; i < chars.length; i++) {
-                let charCenterAngle = currentAngle + (charAngles[i] / 2);
-                
-                ctx.save();
-                ctx.rotate(charCenterAngle);
-                ctx.translate(radius, 0);
-                ctx.rotate(Math.PI / 2); 
-                ctx.fillText(chars[i], 0, 0);
-                ctx.restore();
-                
-                currentAngle += charAngles[i] + letterSpacingAngle;
-            }
-            ctx.restore();
+        ctx.save();
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        
+        const chars = Array.from(text);
+        let totalAngle = 0;
+        const charAngles = [];
+        const letterSpacingAngle = chars.length > 1 ? letterSpacing / radius : 0; 
+        
+        // 1. Calculate precise angles for each character
+        for (let i = 0; i < chars.length; i++) {
+            let w = ctx.measureText(chars[i]).width;
+            let a = w / radius;
+            charAngles.push(a);
+            totalAngle += a;
+            if (i < chars.length - 1) totalAngle += letterSpacingAngle;
         }
+        
+        let currentAngle = centerAngle - (totalAngle / 2);
+        
+        // 2. Draw each character
+        for (let i = 0; i < chars.length; i++) {
+            let charCenterAngle = currentAngle + (charAngles[i] / 2);
+            
+            ctx.save();
+            // Rotate to the exact angle on the circle
+            ctx.rotate(charCenterAngle);
+            // Move out to the ring
+            ctx.translate(radius, 0);
+            // Rotate 90 degrees to make the text face the center
+            ctx.rotate(Math.PI / 2); 
+            
+            // THE FIX: Vertical Nudge
+            // 1.5 to 2 pixels perfectly compensates for the lack of lowercase 
+            // descenders in ALL-CAPS text for a 12px font. 
+            const verticalNudge = 1.5; 
+            
+            ctx.fillText(chars[i], 0, verticalNudge); 
+            
+            ctx.restore();
+            
+            currentAngle += charAngles[i] + letterSpacingAngle;
+        }
+        ctx.restore();
+    }
 
         // Helper function for accurate lunar phases
         function drawMoonPhase(ctx, phase, radius, cutoutRadius) {
@@ -2121,12 +2140,13 @@
         const daysInYear = (now.getUTCFullYear() % 4 === 0 && now.getUTCFullYear() % 100 !== 0) || (now.getUTCFullYear() % 400 === 0) ? 366 : 365;
 
         // --- DAY OF WEEK RING ---
-        const weekRingR = effectiveRadius + 12;
+        const weekRingR = effectiveRadius + 14;
         const daySegAngle = (2 * Math.PI) / 7;
-        const weekLineWidth = 10; // Thickness of the ring
+        const weekLineWidth = 18; // Thickness of the ring
+        const weekTickWidth = (weekLineWidth-1)/2
 
         const planetaryDaySymbols = ['☉ SUN', '☽ MON', '♂ TUE', '☿ WED', '♃ THUR', '♀ FRI', '♄ SAT'];
-        const christianDayNames  = ['Dominica', 'Feria II', 'Feria III', 'Feria IV', 'Feria V', 'Feria VI', 'Sabbatum'];
+        const christianDayNames  = ['DOMINICA', 'FERIA II', 'FERIA III', 'FERIA IV', 'FERIA V', 'FERIA VI', 'SABBATUM'];
 
         const midnightMs = new Date(now).setHours(0,0,0,0);
         const cycleFrac = (now - midnightMs) / 86400000;
@@ -2145,11 +2165,11 @@
             const weekday = i % 7;
             const segStart = ringStartAngle + i * daySegAngle;
             
-            // --- Draw Separator Line (Same style as months) ---
+            // --- Draw Separator Line ---
             ctx.beginPath();
             // Start at inner edge of ring, end at outer edge
-            ctx.moveTo((weekRingR - weekLineWidth/2) * Math.cos(segStart), (weekRingR - weekLineWidth/2) * Math.sin(segStart));
-            ctx.lineTo((weekRingR + weekLineWidth/2) * Math.cos(segStart), (weekRingR + weekLineWidth/2) * Math.sin(segStart));
+            ctx.moveTo((weekRingR - weekTickWidth) * Math.cos(segStart), (weekRingR - weekTickWidth) * Math.sin(segStart));
+            ctx.lineTo((weekRingR + weekTickWidth) * Math.cos(segStart), (weekRingR + weekTickWidth) * Math.sin(segStart));
             ctx.lineWidth = 1;
             ctx.strokeStyle = '#374151'; // Matching month tick color
             ctx.stroke();
@@ -2157,24 +2177,26 @@
             // --- Label ---
             const midAngle = segStart + (daySegAngle / 2);
             ctx.save();
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fillStyle = '#6b7280';
 
             if (isChristianWeekMode) {
-                ctx.font = '700 7px sans-serif';
-                drawCurvedText(christianDayNames[weekday], weekRingR, midAngle, 1);
+                ctx.font = '700 12px sans-serif';
+                drawCurvedText(christianDayNames[weekday], weekRingR, midAngle, 1.5);
             } else {
-                ctx.font = '700 7px sans-serif';
-                drawCurvedText(planetaryDaySymbols[weekday], weekRingR, midAngle, 1);
+                ctx.font = '700 12px sans-serif';
+                drawCurvedText(planetaryDaySymbols[weekday], weekRingR, midAngle, 1.5);
             }
             ctx.restore();
         }
 
         // --- DRAW MONTHS RING (Now the Moon track) ---
-        const monthsRingR = effectiveRadius + 27;
+        const monthsRingR = effectiveRadius + 34;
+        const monthLineWidth = 18;
+        const monthTickWidth = (monthLineWidth-1)/2
         
         ctx.beginPath();
         ctx.arc(0, 0, monthsRingR, 0, 2 * Math.PI);
-        ctx.lineWidth = 13;
+        ctx.lineWidth = monthLineWidth;
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
         ctx.stroke();
 
@@ -2186,8 +2208,8 @@
             let startAngle = -((cumDays[i] - 80) / 365) * 2 * Math.PI + Math.PI;
             
             ctx.beginPath();
-            ctx.moveTo((monthsRingR - 6.5) * Math.cos(startAngle), (monthsRingR - 6.5) * Math.sin(startAngle));
-            ctx.lineTo((monthsRingR + 6.5) * Math.cos(startAngle), (monthsRingR + 6.5) * Math.sin(startAngle));
+            ctx.moveTo((monthsRingR - monthTickWidth) * Math.cos(startAngle), (monthsRingR - monthTickWidth) * Math.sin(startAngle));
+            ctx.lineTo((monthsRingR + monthTickWidth) * Math.cos(startAngle), (monthsRingR + monthTickWidth) * Math.sin(startAngle));
             ctx.lineWidth = 1;
             ctx.strokeStyle = '#374151';
             ctx.stroke();
@@ -2196,19 +2218,19 @@
             if (i === 11) nextAngle = -((365 - 80) / 365) * 2 * Math.PI + Math.PI;
             let midAngle = startAngle + (nextAngle - startAngle) / 2;
             
-            ctx.font = '700 7px sans-serif'; 
-            drawCurvedText(monthNames[i], monthsRingR, midAngle, 1);
+            ctx.font = '700 12px sans-serif'; 
+            drawCurvedText(monthNames[i], monthsRingR, midAngle, 1.5);
         }
 
         // --- DRAW SEASON RING (Sun Track) ---
-        const seasonRingR = effectiveRadius + 44;
+        const seasonRingR = effectiveRadius + 54;
 
         if (isSeasonLabelMode) {
-            const ringWidth = 8;
+            const seasonLineWidth = 10;
             const gap = 0.03;
 
             ctx.lineCap = 'round';
-            ctx.lineWidth = ringWidth;
+            ctx.lineWidth = seasonLineWidth;
 
             // Colored Tracks
             function eclipticToCanvas(deg) {
@@ -2226,7 +2248,7 @@
             ctx.beginPath(); ctx.arc(0, 0, seasonRingR, springSolstice + gap, winterSolstice - gap); ctx.strokeStyle = '#60a5fa'; ctx.stroke(); // Winter
 
             if(isSeasonTextMode){
-                ctx.font = '700 6px -apple-system, sans-serif';
+                ctx.font = '700 7px -apple-system, sans-serif';
                 ctx.fillStyle = '#1c1c21';
                 drawCurvedText('SPRING', seasonRingR, eclipticToCanvas(45), 1.5);
                 drawCurvedText('SUMMER', seasonRingR, eclipticToCanvas(135), 1.5);
@@ -2243,7 +2265,9 @@
         }
 
         // ---- DRAW ZODIAC RING ----
-        const zodiacRingR = effectiveRadius + 64;
+        const zodiacRingR = effectiveRadius + 74;
+        const zodiacLineWidth = 18;
+        const zodiacTickWidth = (zodiacLineWidth-1)/2
         const zodiacSymbols = ['♈︎', '♉︎', '♊︎', '♋︎', '♌︎', '♍︎', '♎︎', '♏︎', '♐︎', '♑︎', '♒︎', '♓︎'];
         const zodiacNames = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'];
 
@@ -2267,7 +2291,7 @@
         // 3. DRAW THE TRACK BACKGROUND
         ctx.beginPath();
         ctx.arc(0, 0, zodiacRingR, 0, 2 * Math.PI);
-        ctx.lineWidth = 18;
+        ctx.lineWidth = zodiacLineWidth;
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
         ctx.stroke();
 
@@ -2284,8 +2308,8 @@
         
             // Draw Divider Lines
             ctx.beginPath();
-            ctx.moveTo((zodiacRingR - 9) * Math.cos(startRad), (zodiacRingR - 9) * Math.sin(startRad));
-            ctx.lineTo((zodiacRingR + 9) * Math.cos(startRad), (zodiacRingR + 9) * Math.sin(startRad));
+            ctx.moveTo((zodiacRingR - zodiacTickWidth) * Math.cos(startRad), (zodiacRingR - zodiacTickWidth) * Math.sin(startRad));
+            ctx.lineTo((zodiacRingR + zodiacTickWidth) * Math.cos(startRad), (zodiacRingR + zodiacTickWidth) * Math.sin(startRad));
             ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#374151'; 
             ctx.stroke();
@@ -2295,8 +2319,8 @@
             let midAngle = (-midDeg * Math.PI / 180) + Math.PI;
         
             if (isZodiacTextMode) {
-                ctx.font = '600 7px sans-serif'; 
-                drawCurvedText(zodiacNames[i], zodiacRingR, midAngle, 1);
+                ctx.font = '600 12px sans-serif'; 
+                drawCurvedText(zodiacNames[i], zodiacRingR, midAngle, 1.5);
             } else {
                 ctx.font = '14px "Segoe UI Symbol", "Apple Symbols", sans-serif'; 
                 drawCurvedText(zodiacSymbols[i], zodiacRingR, midAngle, 0);
@@ -2307,9 +2331,9 @@
 
         // --- DRAW LITURGICAL RING ---
         if (isLiturgicalMode) {
-            const litRingR = effectiveRadius + 84; 
-            const litWidth = 14;
-            const litGap = 0.045; 
+            const litRingR = effectiveRadius + 94; 
+            const litWidth = 12;
+            const litGap = 0.03; 
             
             const litSegments = getLiturgicalSegments(now);
             
@@ -2344,10 +2368,10 @@
                     if (segDays < 0) segDays += daysInYear; 
 
                     if (segDays > 14) {
-                        ctx.font = '700 6.5px -apple-system, sans-serif';
-                        drawCurvedText(seg.text, litRingR, midAngle, 1);
+                        ctx.font = '700 10px -apple-system, sans-serif';
+                        drawCurvedText(seg.text, litRingR, midAngle, 1.5);
                     } else if (segDays >= 6) {
-                        ctx.font = '700 5px -apple-system, sans-serif';
+                        ctx.font = '700 7px -apple-system, sans-serif';
                         drawCurvedText(seg.text, litRingR, midAngle, 0.5);
                     }
                 }
@@ -2421,7 +2445,7 @@
             ctx.save();
             ctx.translate(px, py);
             ctx.rotate(-zodiacRotationOffset);
-            ctx.font = 'bold 14px sans-serif';
+            ctx.font = 'bold 12px sans-serif';
             ctx.fillStyle = '#1c1c21';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -2455,23 +2479,17 @@
         // --- DRAW INNER CLOCK FACE ---
         ctx.beginPath();
         ctx.moveTo(0, 0); 
-        ctx.arc(0, 0, effectiveRadius, aRise, aSet, false);
+        ctx.arc(0, 0, effectiveRadius+1, aRise, aSet, false);
         ctx.closePath(); 
         ctx.fillStyle = '#232329'; 
         ctx.fill();
 
         ctx.beginPath();
         ctx.moveTo(0, 0); 
-        ctx.arc(0, 0, effectiveRadius, aSet, aRise + 2 * Math.PI, false);
+        ctx.arc(0, 0, effectiveRadius+1, aSet, aRise + 2 * Math.PI, false);
         ctx.closePath(); 
         ctx.fillStyle = '#18181c'; 
         ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(0, 0, effectiveRadius, 0, 2 * Math.PI);
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = '#374151';
-        ctx.stroke();
 
         ctx.beginPath();
         ctx.moveTo(effectiveRadius * Math.cos(aRise), effectiveRadius * Math.sin(aRise));
@@ -2488,7 +2506,10 @@
             let isSpecialDaylightHour = (h === 3 || h === 6 || h === 9);
             
             let innerDist;
-            if (isSpecialDaylightHour) {
+            if (h === 6) {
+                innerDist = effectiveRadius - 7;
+            }
+            else if (isSpecialDaylightHour) {
                 innerDist = effectiveRadius - 4; 
             } else {
                 innerDist = isHour ? effectiveRadius - 18 : effectiveRadius - 9;
@@ -2503,13 +2524,19 @@
             ctx.stroke();
         }
 
-        ctx.font = '600 21px -apple-system, sans-serif';
+        ctx.beginPath();
+        ctx.arc(0, 0, effectiveRadius+2, 0, 2 * Math.PI);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#374151';
+        ctx.stroke();
+
+        ctx.font = '600 24px -apple-system, sans-serif';
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#fbbf24';
         
         const textRadiusNormal = effectiveRadius - 33;
-        const textRadiusSpecial = effectiveRadius - 20; 
+        const textRadiusSpecial = effectiveRadius - 22; 
 
         const romanHours = [
             { num: 3, text: 'III' },
