@@ -2264,7 +2264,7 @@
         const weekLineWidth = 18; // Thickness of the ring
         const weekTickWidth = (weekLineWidth-1)/2
 
-        const planetaryDaySymbols = ['☉ SUN', '☽ MON', '♂ TUE', '☿ WED', '♃ THUR', '♀ FRI', '♄ SAT'];
+        const planetaryDayNames = ['☉ SUN', '☽ MON', '♂ TUE', '☿ WED', '♃ THU', '♀ FRI', '♄ SAT'];
         const christianDayNames  = ['DOMINICA', 'FERIA II', 'FERIA III', 'FERIA IV', 'FERIA V', 'FERIA VI', 'SABBATUM'];
 
         const midnightMs = new Date(now).setHours(0,0,0,0);
@@ -2303,7 +2303,7 @@
                 drawCurvedText(christianDayNames[weekday], weekRingR, midAngle, 1.5);
             } else {
                 ctx.font = '700 12px sans-serif';
-                drawCurvedText(planetaryDaySymbols[weekday], weekRingR, midAngle, 1.5);
+                drawCurvedText(planetaryDayNames[weekday], weekRingR, midAngle, 1.5);
             }
             ctx.restore();
         }
