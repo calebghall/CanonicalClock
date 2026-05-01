@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -19,11 +22,10 @@ jobs:
 
       - name: Download latest GeoNames data
         run: |
-          set -e # Exit immediately if a command fails
+          set -e
 
           wget http://download.geonames.org/export/dump/cities500.zip
 
-          # Check if zip exists and has content
           if [ ! -s cities500.zip ]; then
             echo "Error: Downloaded file is empty or missing."
             exit 1
@@ -31,7 +33,6 @@ jobs:
 
           unzip cities500.zip
           
-          # Final check: Does the txt file actually exist after unzipping?
           if [ ! -f cities500.txt ]; then
             echo "Error: cities500.txt not found after unzip."
             exit 1
@@ -40,10 +41,12 @@ jobs:
       - name: Run Compression Script
         run: python citydata/cityDataCompress.py
 
-      - name: Commit and Push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add citydata/*.json
-          # Only commit if there are actually changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated city data update" && git push)
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Automated city data update"
+          branch: city-data-update
+          title: "Monthly City Data Update"
+          body: "Automated update from GeoNames. Please review before merging."
+          add-paths: citydata/*.json
